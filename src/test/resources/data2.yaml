@@ -1,8 +1,8 @@
 data 1:
   Input Field: Hello
-  Checkbox: '1'
-  Radio Button: White
-  Dropdown: Binary
+  Checkbox: Milk
+  Radio Button: Blue
+  Dropdown: Undecided
   Email: info@automatenow.io
   Message: This is a test
 

@@ -1,6 +1,6 @@
 package io.automatenow.utils;
 
-import io.automatenow.pages.BasePage;
+import io.automatenow.core.BasePage;
 import org.testng.asserts.IAssert;
 import org.testng.asserts.SoftAssert;
 

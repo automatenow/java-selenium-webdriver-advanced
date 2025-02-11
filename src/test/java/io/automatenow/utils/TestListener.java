@@ -5,20 +5,14 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ViewName;
-import io.automatenow.pages.BasePage;
-import org.apache.commons.io.FileUtils;
+import io.automatenow.core.BasePage;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-
-import static org.testng.Assert.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +28,7 @@ import java.util.Arrays;
  */
 public class TestListener extends BasePage implements ITestListener {
     private static ExtentReports extent = new ExtentReports();
-    private ExtentSparkReporter reporter = new ExtentSparkReporter("ExtentReport.html");
+    private static ExtentSparkReporter reporter = new ExtentSparkReporter("ExtentReport.html");
 
     @Override
     public void onTestStart(ITestResult iTestResult) {
@@ -50,13 +44,13 @@ public class TestListener extends BasePage implements ITestListener {
      * This method contains three different options for saving screenshots of failed tests. Please uncomment the code
      * for the options that you wish to use.
      *
-     * @param iTestResult
+     * @param result
      */
     @Override
-    public synchronized void onTestFailure(ITestResult iTestResult) {
+    public synchronized void onTestFailure(ITestResult result) {
+        String failedTest = result.getName();
         String screenshotsDir = "./failed_tests/";
         String screenshotsPathWordDoc = screenshotsDir + "screenshots.docx";
-        String failedTest = iTestResult.getName();
 
         log.error("Test '" + failedTest + "' has failed and a screenshot was taken.");
 
@@ -73,7 +67,8 @@ public class TestListener extends BasePage implements ITestListener {
         takeScreenshot(failedTest);
 
         // Sets Dashboard as the primary view of the report
-        reporter.viewConfigurer().viewOrder().as(new ViewName[]{ViewName.DASHBOARD, ViewName.TEST}).apply();
+//        reporter.viewConfigurer().viewOrder().as(new ViewName[]{ViewName.DASHBOARD, ViewName.TEST}).apply();
+
         extent.attachReporter(reporter);
         extent.createTest(failedTest)
                 // Add screenshot
@@ -81,13 +76,13 @@ public class TestListener extends BasePage implements ITestListener {
                 // Offers another form of displaying the screenshot
 //                .fail(MediaEntityBuilder.createScreenCaptureFromPath(screenshotsDir + failedTest + ".png").build())
                 // Uses the test's group info to set the test category
-                .assignCategory(iTestResult.getMethod().getGroups())
+                .assignCategory(result.getMethod().getGroups())
                 // Prints the stacktrace
-                .log(Status.FAIL, iTestResult.getThrowable())
+                .log(Status.FAIL, result.getThrowable())
                 // Prints the test's description
-                .info(iTestResult.getMethod().getDescription())
+                .info(result.getMethod().getDescription())
                 // Prints the test's group
-                .info(Arrays.toString(iTestResult.getMethod().getGroups()));
+                .info(Arrays.toString(result.getMethod().getGroups()));
         //  Write the test information to the reporter
         extent.flush();
 

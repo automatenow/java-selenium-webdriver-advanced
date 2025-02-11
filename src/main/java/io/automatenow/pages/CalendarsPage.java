@@ -1,15 +1,16 @@
 package io.automatenow.pages;
 
+import io.automatenow.core.BasePage;
 import org.openqa.selenium.By;
 
 /**
  * @author Marco A. Cruz
  */
 public class CalendarsPage extends BasePage {
-    private By calendarYear = By.xpath("//span[@class='ui-datepicker-year']");
-    private By calendarMonth = By.xpath("//span[@class='ui-datepicker-month']");
-    private By calendarField = By.id("g1065-selectorenteradate");
-    private By calendarRightArrow = By.xpath("//a[@title='Next']");
+    private final By calendarYear = By.xpath("//span[@class='ui-datepicker-year']");
+    private final By calendarMonth = By.xpath("//span[@class='ui-datepicker-month']");
+    private final By calendarField = By.xpath("//*[@data-format='yy-mm-dd']");
+    private final By calendarRightArrow = By.xpath("//a[@title='Next']");
 
     public CalendarsPage setDate(String month, String day, String year) {
         click(calendarField);

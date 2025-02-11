@@ -1,5 +1,6 @@
 package io.automatenow.pages;
 
+import io.automatenow.core.BasePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 
@@ -7,12 +8,11 @@ import org.openqa.selenium.support.ui.Select;
  * @author Marco A. Cruz
  */
 public class FormFieldsPage extends BasePage {
-    private By inputField = By.id("g1103-inputfield");
-    private By dropDown = By.id("g1103-dropdownmenu");
-    private By emailField = By.id("email");
-    private By messageField = By.id("contact-form-comment-message");
-    private By submit = By.cssSelector("div[class='entry-content'] button[type='submit']");
-    private By confirmationMsg = By.xpath("//div[@id='contact-form-1103']//h3[1]");
+    private final By inputField = By.id("name-input");
+    private final By dropDown = By.id("automation");
+    private final By emailField = By.id("email");
+    private final By messageField = By.id("message");
+    private final By submitBtn = By.id("submit-btn");
 
     public FormFieldsPage setInputFieldText(String text) {
         setText(inputField, text);
@@ -29,12 +29,12 @@ public class FormFieldsPage extends BasePage {
      * @param option Range is 1 to 3
      */
     public FormFieldsPage selectCheckbox(String option) {
-        click(By.xpath("//input[@value='Option " + option + "']"));
+        click(By.xpath("//input[@value='" + option + "']"));
         return this;
     }
 
     public boolean checkboxIsSelected(String option) {
-        return getDriver().findElement(By.xpath("//input[@value='Option " + option + "']")).isSelected();
+        return getDriver().findElement(By.xpath("//input[@value='" + option + "']")).isSelected();
     }
 
     /**
@@ -86,11 +86,8 @@ public class FormFieldsPage extends BasePage {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        click(submit);
+        scrollElementIntoView(submitBtn);
+        click(submitBtn);
         return this;
-    }
-
-    public String getConfirmationMessage() {
-        return getText(confirmationMsg);
     }
 }

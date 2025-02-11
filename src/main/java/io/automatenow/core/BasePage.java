@@ -1,12 +1,10 @@
-package io.automatenow.pages;
+package io.automatenow.core;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ThreadGuard;
@@ -61,13 +59,12 @@ public class BasePage {
 
     private void openBrowser(String browser) {
 
-        switch (browser) {
+        switch (browser.toLowerCase()) {
             case "chrome":
-                WebDriverManager.chromedriver().setup();
                 // Run in headless mode
 //                ChromeOptions options = new ChromeOptions();
 //                options.addArguments("--headless");
-//                options.addArguments("--window-size=1920,1080");
+//                options.addArguments("--window-size=1920,1080");  // or: getDriver().manage().window().setSize(new Dimension(1024, 768));
 //                driver.set(ThreadGuard.protect(new ChromeDriver(options)));
 
                 // Change download default directory
@@ -86,7 +83,6 @@ public class BasePage {
                 break;
 
             case "firefox":
-                WebDriverManager.firefoxdriver().setup();
                 driver.set(ThreadGuard.protect(new FirefoxDriver()));
                 break;
 
@@ -95,6 +91,7 @@ public class BasePage {
         }
 
         assert getDriver() != null;
+//        getDriver().manage().window().setSize(new Dimension(1024, 768));
         getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         getDriver().manage().window().maximize();
     }
@@ -121,7 +118,7 @@ public class BasePage {
     public String getText(By locator) {
         String displayedText = getDriver().findElement(locator).getText();
         if (displayedText.isEmpty()) {
-            return getDriver().findElement(locator).getAttribute("value");
+            return getDriver().findElement(locator).getDomProperty("value");
         } else {
             return displayedText;
         }
@@ -172,9 +169,8 @@ public class BasePage {
      * @param y       Y-coordinate
      */
     public void dragAndDropByOffset(By locator, int x, int y) {
-        Actions actions = new Actions(getDriver());
         WebElement element = getDriver().findElement(locator);
-        actions.dragAndDropBy(element, x, y).perform();
+        new Actions(getDriver()).dragAndDropBy(element, x, y).perform();
     }
 
     public void dismissPopup() {
@@ -202,16 +198,37 @@ public class BasePage {
 //        wait.until(ExpectedConditions.textToBe(locator, text));
     }
 
-    public void hoverOverElement(By locator) {
-        WebElement element = getDriver().findElement(locator);
-        Actions actions = new Actions(getDriver());
-        actions.moveToElement(element).perform();
+    public void waitForElementValue(By locator, String text) {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(12));
+        wait.until(ExpectedConditions.textToBePresentInElementValue(locator, text));
     }
 
+    public void hoverOverElement(By locator) {
+        WebElement element = getDriver().findElement(locator);
+        new Actions(getDriver()).moveToElement(element).perform();
+    }
+
+    /**
+     * Scroll the specified element into the center of the viewport
+     * @param locator The element to scroll into view
+     */
     public void scrollElementIntoView(By locator) {
         WebElement element = getDriver().findElement(locator);
-        JavascriptExecutor executor = (JavascriptExecutor) getDriver();
-        executor.executeScript("arguments[0].scrollIntoView();", element);
+        JavascriptExecutor executor = (JavascriptExecutor)getDriver();
+        executor.executeScript("arguments[0].scrollIntoView({block: \"center\"});", element);
+        pause(1);
+    }
+
+    /**
+     * Pauses the test execution for the specified number of seconds.
+     * @param seconds The number of seconds to pause.
+     */
+    public void pause(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -280,5 +297,14 @@ public class BasePage {
 
     public Cookie getCookie(String name) {
         return getDriver().manage().getCookieNamed(name);
+    }
+
+    public void clearCookies() {
+        getDriver().manage().deleteAllCookies();
+        refresh();
+    }
+
+    private void refresh() {
+        getDriver().navigate().refresh();
     }
 }

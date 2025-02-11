@@ -28,3 +28,8 @@ hs_err_pid*
 
 # IntelliJ files
 *.idea
+
+# Other
+target/
+failed_tests/
+misc.xml

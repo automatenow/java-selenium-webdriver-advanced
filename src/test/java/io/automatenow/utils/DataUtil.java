@@ -1,6 +1,6 @@
 package io.automatenow.utils;
 
-import io.automatenow.tests.BaseTest;
+import io.automatenow.core.BaseTest;
 import org.testng.annotations.DataProvider;
 import org.yaml.snakeyaml.Yaml;
 
@@ -16,12 +16,12 @@ public class DataUtil extends BaseTest {
 
     @DataProvider
     public static Object[][] dataProvider1() {
-        return readYAML("src/test/resources/sandbox_data.yaml", "data 1");
+        return readYAML("src/test/resources/data2.yaml", "data 1");
     }
 
     @DataProvider
     public static Object[][] dataProvider2() {
-        return readYAML("src/test/resources/sandbox_data.yaml", "data 2");
+        return readYAML("src/test/resources/data2.yaml", "data 2");
     }
 
     private static Object[][] readYAML(String filename, String yamlObj) {
