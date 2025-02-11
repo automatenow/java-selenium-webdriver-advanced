@@ -1,6 +1,6 @@
 # Java Selenium WebDriver - Advanced Level
 
-Welcome to the Java Selenium WebDriver Advanced Level repository!\
+Welcome to the Java Selenium WebDriver Advanced Level repository!
 
 This repository was created by [Marco A. Cruz](http://www.linkedin.com/in/marco-a-cruz) and contains advanced examples, utilities, and best practices for automating web applications using Selenium WebDriver with Java.
 . This is a continuation of the [Intermediate Java Selenium repo](https://github.com/automatenow/java-selenium-webdriver-intermediate)
